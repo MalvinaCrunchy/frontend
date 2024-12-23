@@ -29,12 +29,12 @@ interface ProductPageProps {
 }
 
 export default function ProductPage({ params }: ProductPageProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [id, setId] = useState<string | null>(null);
   const toast = useToast();
-
   const resolvedParams = React.use(params);
   const borderColor = useColorModeValue('gray.100', 'gray.700');
   const textColor = useColorModeValue('yellow.500', 'yellow.300');
@@ -105,8 +105,16 @@ export default function ProductPage({ params }: ProductPageProps) {
   };
 
   const MotionButton = Button; //TODO  motion(Button)
+
+  const toggleDescription = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const MAX_LENGTH = 320; // Set your desired max length
+  const truncatedDescription = product.description.length > MAX_LENGTH ? product.description.substring(0, MAX_LENGTH) + '...' : product.description;
+
   return (
-    <Container maxW="container.md" py={8}>
+    <Container maxW="container.lg" py={8}>
       <SimpleGrid columns={{ base: 1, lg: 2 }} spacing={{ base: 8, md: 10 }}>
         <Flex>
           <Image
@@ -144,9 +152,12 @@ export default function ProductPage({ params }: ProductPageProps) {
           >
             <VStack spacing={{ base: 4, sm: 6 }}>
               <Text fontSize={'lg'}>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aliquid amet at
-                delectus doloribus dolorum expedita hic, ipsum maxime modi nam officiis porro, quae,
-                quisquam quos reprehenderit velit? Natus, totam.
+                {isExpanded ? product.description : truncatedDescription}
+              {product.description.length > MAX_LENGTH && (
+                <Button ms='10px' onClick={toggleDescription} variant={'link'} color='primary.100'>
+                  {isExpanded ? 'Скрыть' : 'Подробнее'}
+                </Button>
+              )}
               </Text>
             </VStack>
 
@@ -166,19 +177,19 @@ export default function ProductPage({ params }: ProductPageProps) {
                   <Text as={'span'} fontWeight={'bold'}>
                     Состав:
                   </Text>{' '}
-                  состав
+                  {product.compotition}
                 </ListItem>
                 <ListItem>
                   <Text as={'span'} fontWeight={'bold'}>
                     Кол-во штук в упаковке:
                   </Text>{' '}
-                  24 шт
+                  {product.amount}
                 </ListItem>
                 <ListItem>
                   <Text as={'span'} fontWeight={'bold'}>
                     Объем:
                   </Text>{' '}
-                  0, 01 л.
+                  {product.volume}
                 </ListItem>
                 <ListItem>
                   <Text as={'span'} fontWeight={'bold'}>

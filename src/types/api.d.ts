@@ -42,12 +42,10 @@ export interface ProductPage {
   all_categories?: Categories[];
 }
 
-interface ErrorResponse {
-  detail: {
-    loc: [string, number];
-    msg: string;
-    type: string;
-  }[];
+export interface Brand {
+  id: number;
+  name: string;
+  image_url: string;
 }
 
 interface RegisterRequest {

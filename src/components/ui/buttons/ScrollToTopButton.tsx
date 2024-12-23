@@ -34,13 +34,13 @@ const ScrollToTopButton: React.FC = () => {
       {isVisible && (
         <Flex
           position="fixed"
-          bottom="100px"
-          right="20px"
+          bottom={{ base: '145px', lg: '100px' }}
+          right={['12px', '20px']}
           zIndex="1000"
           cursor="pointer"
           bg="primary.100"
-          w="50px"
-          h="50px"
+          w={['40px', '50px']}
+          h={['40px', '50px']}
           borderRadius="10px"
           onClick={scrollToTop}
           alignItems={'center'}

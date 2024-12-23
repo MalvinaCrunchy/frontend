@@ -4,3 +4,5 @@ export { CustomButton } from './CustomButton';
 export { ProfileButton } from './ProfileButton';
 export { CartButton } from './CartButton';
 export { FavoritesButton } from './FavoritesButton';
+export { ContactUsButton } from './ContactUsButton';
+export { CatalogButton } from './CatalogButton';

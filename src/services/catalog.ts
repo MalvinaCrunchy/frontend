@@ -8,11 +8,13 @@ export const getProducts = async ({
   size,
   category_id,
   has_discount,
+  brand_id,
 }: {
   page: number;
   size: number;
   category_id?: number;
   has_discount?: boolean;
+  brand_id?: string;
 }): Promise<ProductPage> => {
   return (
     await axiosInstance.get<ProductPage>(ApiRoutes.CATALOG, {
@@ -21,6 +23,7 @@ export const getProducts = async ({
         size,
         category_id,
         has_discount,
+        brand_id,
       },
     })
   ).data;

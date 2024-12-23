@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { Providers } from '@/app/providers';
 import { Header } from '@/components/layout/header/Header';
 import { StickyHeader } from '@/components/layout/header/StickyHeader';
-import LargeWithLogoCentered from "@/components/layout/footer/Footer";
-import ScrollToTopButton from "@/components/ui/buttons/ScrollToTopButton";
+import LargeWithLogoCentered from '@/components/layout/footer/Footer';
+import ScrollToTopButton from '@/components/ui/buttons/ScrollToTopButton';
 import SupportIcon from '@/components/ui/buttons/SupportButton';
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <StickyHeader />
           {children}
           <SupportIcon />
-          <LargeWithLogoCentered/>
-          <ScrollToTopButton/>
+          <LargeWithLogoCentered />
+          <ScrollToTopButton />
         </Providers>
       </body>
     </html>

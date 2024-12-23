@@ -1,12 +1,14 @@
 'use client';
 
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { Container, HStack, SimpleGrid, Spinner, Center } from '@chakra-ui/react';
+import { useEffect, useState, useRef, useCallback, Suspense } from 'react';
+import { Container, HStack, Spinner, Center, useBreakpointValue } from '@chakra-ui/react';
 
-import ProductCard from '@/components/ui/cards/ProductCard';
 import SimpleSidebar from '@/components/ui/sideBar/SideBar';
 import { Api } from '@/services/api-client';
 import { Product, Categories } from '@/types/api';
+import SearchParamsWrapper from '@/components/SearchParams';
+import CategoryCarousel from '@/components/ui/category/CategoryCarousel';
+import CatalogGrid from '@/components/ui/CatalogGrid';
 
 const ITEMS_PER_PAGE = 6;
 
@@ -16,36 +18,41 @@ const Catalog: React.FC = () => {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [brandId, setBrandId] = useState<string | null>(null); // Состояние для brandId
   const observer = useRef<IntersectionObserver | null>(null);
   const [prevCategory, setPrevCategory] = useState<number | undefined>(selectedCategory);
   const [categories, setCategories] = useState<Categories[] | undefined>(undefined);
 
-  // Ref to track if categories are already set
   const categoriesSetRef = useRef(false);
 
+  const isMobileOrTablet = useBreakpointValue({ base: true, md: true, lg: false });
+
   const loadProducts = useCallback(async () => {
+    if (brandId === null) {
+      return;
+    }
     try {
       setLoading(true);
       const data = await Api.catalog.getProducts({
         page,
         size: ITEMS_PER_PAGE,
         category_id: selectedCategory,
+        brand_id: brandId || undefined,
       });
 
       setProducts((prev) => (page === 0 ? data.products : [...prev, ...data.products]));
       setHasMore(data.products.length === ITEMS_PER_PAGE);
 
-      // Set categories only if they haven't been set before
       if (!categoriesSetRef.current) {
         setCategories(data.all_categories);
-        categoriesSetRef.current = true; // Mark that categories have been set
+        categoriesSetRef.current = true;
       }
     } catch (error) {
       console.error('Error loading products:', error);
     } finally {
       setLoading(false);
     }
-  }, [page, selectedCategory]);
+  }, [page, selectedCategory, brandId]);
 
   const lastProductRef = useCallback(
     (node: HTMLDivElement) => {
@@ -70,43 +77,40 @@ const Catalog: React.FC = () => {
       setPrevCategory(selectedCategory);
     }
     loadProducts();
-  }, [selectedCategory, page]);
+  }, [selectedCategory, page, brandId]);
 
   return (
-    <Container maxW="container.xl">
-      <HStack alignItems={'start'} mt={['60px', '0']}>
-        <SimpleSidebar
-          categories={categories}
-          onCategorySelect={setSelectedCategory}
-          selectedCategory={selectedCategory}
-        />
-        <Container maxW="container.lg" py={8}>
-          <SimpleGrid columns={[1, 2, 3]} spacing={8}>
-            {products.map((product, index) => (
-              <div
-                ref={index === products.length - 1 ? lastProductRef : undefined}
-                key={product.id}
-              >
-                <ProductCard
-                  id={product.id}
-                  name={product.name}
-                  country={product.country}
-                  price={product.price}
-                  discount={product.discount}
-                  final_price={product.final_price}
-                  imageUrl={product.image_url}
-                />
-              </div>
-            ))}
-          </SimpleGrid>
-          {loading && (
-            <Center py={8}>
-              <Spinner size="xl" />
-            </Center>
-          )}
-        </Container>
-      </HStack>
-    </Container>
+    <Suspense
+      fallback={
+        <Center py={8}>
+          <Spinner size="xl" />
+        </Center>
+      }
+    >
+      <Container maxW="container.xl">
+        {isMobileOrTablet ? (
+          <>
+            <CategoryCarousel
+              categories={categories}
+              selectedCategory={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
+
+            <CatalogGrid products={products} loading={loading} lastProductRef={lastProductRef} />
+          </>
+        ) : (
+          <HStack alignItems={'start'} mt={['60px', '0']}>
+            <SimpleSidebar
+              categories={categories}
+              onCategorySelect={setSelectedCategory}
+              selectedCategory={selectedCategory}
+            />
+            <CatalogGrid products={products} loading={loading} lastProductRef={lastProductRef} />
+          </HStack>
+        )}
+      </Container>
+      <SearchParamsWrapper setBrandId={setBrandId} />
+    </Suspense>
   );
 };
 

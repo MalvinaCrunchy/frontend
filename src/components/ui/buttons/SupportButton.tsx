@@ -35,13 +35,13 @@ const SupportIcon = () => {
     <Flex
       ref={buttonRef}
       position="fixed"
-      bottom="40px"
-      right="20px"
+      bottom={['100px', '40px']}
+      right={['12px', '20px']}
       zIndex="1000"
       cursor="pointer"
       bg="primary.100"
-      w="50px"
-      h="50px"
+      w={['40px', '50px']}
+      h={['40px', '50px']}
       borderRadius="10px"
       alignItems={'center'}
       justifyContent={'center'}
@@ -60,15 +60,15 @@ const SupportIcon = () => {
           p={4}
           borderRadius="md"
         >
-          <Button bg='primary.100' color='white' gap='8px' justifyContent='start'>
+          <Button bg="primary.100" color="white" gap="8px" justifyContent="start">
             <BsTelegram size={20} />
             Telegram
           </Button>
-          <Button bg='primary.100' color='white' gap='8px' justifyContent='start'>
+          <Button bg="primary.100" color="white" gap="8px" justifyContent="start">
             <BsWhatsapp size={20} />
             Whats App
           </Button>
-          <Button bg='primary.100' color='white' gap='8px' justifyContent='start'>
+          <Button bg="primary.100" color="white" gap="8px" justifyContent="start">
             <BsEnvelope size={20} />
             E-Mail
           </Button>
